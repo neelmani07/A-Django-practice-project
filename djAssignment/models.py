@@ -6,13 +6,13 @@ class Compo(models.Model):
     style = models.CharField(max_length=50)
 
     def __str__(self):
-        return self.type,self.val,self.style
+        return self.type+"  "+self.val+"  "+self.style
 
 class Page(models.Model):
     sections = models.IntegerField(default=0)
     compo =models.ForeignKey(Compo, on_delete=models.CASCADE)
 
-    def __str__(self) -> str:
-        return self.sections,self.compo
+    #def __str__(self) -> str:
+     #   return "%d,%self.sections"+"  "+self.compo
 
 
