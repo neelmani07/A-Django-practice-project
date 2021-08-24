@@ -18,7 +18,7 @@ class PageAdmin(admin.ModelAdmin):
 class PageCompoMapAdmin(admin.ModelAdmin):
 #    inlines = [CompoTabularInline]
     model = PageCompoMap
-    list_display = ['date','page','compo']
+    list_display = ['time_field','date','page','compo']
 
 admin.site.register(Page, PageAdmin)
 admin.site.register(Compo, CompoAdmin)

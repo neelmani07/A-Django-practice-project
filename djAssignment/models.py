@@ -31,6 +31,7 @@ class PageCompoMap(models.Model):
     page = models.ForeignKey('Page', on_delete=CASCADE)
     compo = models.ForeignKey(Compo, on_delete=CASCADE)
     date = models.CharField(max_length=100)
+    time_field = models.TimeField(null=True, blank=True)
     
     def __str__(self):
         return "{}_{}".format(self.page.__str__(), self.compo.__str__())
