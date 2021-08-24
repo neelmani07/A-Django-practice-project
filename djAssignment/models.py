@@ -1,5 +1,6 @@
 from django.db import models
 from django.db.models.deletion import CASCADE
+from django.db.models.fields import NullBooleanField
 
 class Compo(models.Model):
 
@@ -7,6 +8,7 @@ class Compo(models.Model):
     val = models.CharField(max_length=50)
     style = models.CharField(max_length=50)
     nodes = models.CharField(max_length=50, default="systems")
+    pageAssigned = models.ForeignKey('Page',on_delete=CASCADE, blank=True, null=True)
 
     def save(self, *args, **kwargs):
         self.nodes = "system"
@@ -17,16 +19,18 @@ class Compo(models.Model):
 
 class Page(models.Model):
 
-    compo = models.ManyToManyField(Compo, through='PageCompoMap')
-    name = models.CharField(max_length=50, default= 'welcome')
+    component = models.ManyToManyField('Compo', through='PageCompoMap')
+    name = models.CharField(max_length=50, default= 'Thank you')
 
     def __str__(self):
        return "page name="+self.name
+       
+
 
 class PageCompoMap(models.Model):
-    page = models.ForeignKey(Page, on_delete=CASCADE)
+    page = models.ForeignKey('Page', on_delete=CASCADE)
     compo = models.ForeignKey(Compo, on_delete=CASCADE)
-    prefix = models.CharField(max_length=100)
+    date = models.CharField(max_length=100)
     
     def __str__(self):
         return "{}_{}".format(self.page.__str__(), self.compo.__str__())
