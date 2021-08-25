@@ -12,11 +12,25 @@ def validate_type_of_icons(value):
             )
 class Compo(models.Model):
 
-    type_of_compo = models.CharField(max_length=50,validators=[validate_type_of_icons])
+    ICON = 'ic'
+    IMAGE = 'im'
+    HEADING ='h'
+    BODY = 'b'
+    LINK = 'l'
+
+    CHOICES = [
+        (ICON, _('icons')),
+        (IMAGE, _('image')),
+        (HEADING, _('heading')),
+        (BODY, _('body')),
+        (LINK, _('link')),
+    ]
+
+    type_of_compo = models.CharField(max_length=50,validators=[validate_type_of_icons],choices=CHOICES) # choices 
     val = models.CharField(max_length=50)
     style = models.CharField(max_length=50)
     nodes = models.CharField(max_length=50, default="systems")
-    pageAssigned = models.ForeignKey('Page',on_delete=CASCADE, blank=True, null=True)
+    pageAssigned = models.ForeignKey('PageCompoMap',on_delete=CASCADE, blank=True, null=True)
     
     def save(self, *args, **kwargs):
         self.nodes = "system"
@@ -30,9 +44,9 @@ class Compo(models.Model):
         return self.type_of_compo+"  "+self.val+"  "+self.style
 
 class Page(models.Model):
-
+    section = models.IntegerField()
     component = models.ManyToManyField('Compo', through='PageCompoMap')
-    name = models.CharField(max_length=50, default= 'Thank you')
+    name = models.CharField(max_length=50, default= 'Thank you',primary_key=True)
 
     def __str__(self):
        return "page name="+self.name
@@ -41,7 +55,8 @@ class Page(models.Model):
 
 class PageCompoMap(models.Model):
     page = models.ForeignKey('Page', on_delete=CASCADE)
-    compo = models.ForeignKey(Compo, on_delete=CASCADE)
+    component = models.ForeignKey('Compo', on_delete=CASCADE)
+    #section
     date = models.CharField(max_length=100)
     time_field = models.TimeField(null=True, blank=True)
     

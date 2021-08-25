@@ -11,14 +11,14 @@ class CompoTabularInline(admin.TabularInline):
     model = Compo
 
 class PageAdmin(admin.ModelAdmin):
-    inlines = [CompoTabularInline]
+    #inlines = [CompoTabularInline]
     model = Page
-    list_display = ['name']
+    list_display = ['name','section']
 
 class PageCompoMapAdmin(admin.ModelAdmin):
 #    inlines = [CompoTabularInline]
     model = PageCompoMap
-    list_display = ['time_field','date','page','compo']
+    list_display = ['time_field','date','page','component']
 
 admin.site.register(Page, PageAdmin)
 admin.site.register(Compo, CompoAdmin)
