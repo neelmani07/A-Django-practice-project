@@ -16,7 +16,7 @@ class PageAdmin(admin.ModelAdmin):
     list_display = ['name','section']
 
 class PageCompoMapAdmin(admin.ModelAdmin):
-#    inlines = [CompoTabularInline]
+    inlines = [CompoTabularInline]
     model = PageCompoMap
     list_display = ['time_field','date','page','component']
 

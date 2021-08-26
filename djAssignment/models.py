@@ -4,6 +4,7 @@ from django.db.models.fields import NullBooleanField
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 
+
 def validate_type_of_icons(value):
         list_type = ['icon','image','heading','body','link']
         if value not in list_type:
@@ -26,18 +27,23 @@ class Compo(models.Model):
         (LINK, _('link')),
     ]
 
-    type_of_compo = models.CharField(max_length=50,validators=[validate_type_of_icons],choices=CHOICES) # choices 
+    type_of_compo = models.CharField(max_length=50,choices=CHOICES) # choices 
     val = models.CharField(max_length=50)
     style = models.CharField(max_length=50)
     nodes = models.CharField(max_length=50, default="systems")
     pageAssigned = models.ForeignKey('PageCompoMap',on_delete=CASCADE, blank=True, null=True)
     
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['type_of_compo', 'val', 'style'], name='uniqueComponents')
+        ]
+
     def save(self, *args, **kwargs):
         self.nodes = "system"
-        try:
-            Compo.full_clean(self)
-        except ValidationError as e:
-            pass
+        #try:
+        #    Compo.full_clean(self)
+        #except ValidationError as e:
+        #    pass
         super(Compo, self).save(*args, **kwargs)
 
     def __str__(self):
@@ -46,10 +52,17 @@ class Compo(models.Model):
 class Page(models.Model):
     section = models.IntegerField()
     component = models.ManyToManyField('Compo', through='PageCompoMap')
-    name = models.CharField(max_length=50, default= 'Thank you',primary_key=True)
+    name = models.CharField(max_length=50, default= 'Thank you')
+    id= models.AutoField(primary_key=True, null=False)
+    #class Meta:
+    #    unique_together = (("name", "section"),)
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['section', 'name'], name='uniquePages')
+        ]
     def __str__(self):
-       return "page name="+self.name
+       return "page name="+self.name+ "  section="+self.section.__str__()
        
 
 
@@ -61,6 +74,6 @@ class PageCompoMap(models.Model):
     time_field = models.TimeField(null=True, blank=True)
     
     def __str__(self):
-        return "{}_{}".format(self.page.__str__(), self.compo.__str__())
+        return "{}_{}".format(self.page.__str__(), self.component.__str__())
 
 
